@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlayAlmi — Mi Perfil</title>
+   <link rel="stylesheet" href="css/index.css" />
+</head>
+<body>
+
+    <header>
+        <div>
+            <h1>PLAYALMI</h1>
+            <span class="subtitulo">Plataforma de puntuaciones</span>
+        </div>
+        <nav>
+            <ul class="menuNivel1">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="ranking.html">Ranking</a></li>
+                <li class="activo"><a href="perfil.html">Mi Perfil</a></li>
+                <li><a href="#" onclick="localStorage.clear(); window.location.href='login.html'; return false;">Cerrar sesión</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h2>👤 Mi <span>perfil</span></h2>
+
+        <div id="vistaPerfil" class="perfil-card" style="display:none;">
+            <img id="avatarGrande" class="avatar-grande"
+                 src="https://via.placeholder.com/120x120/12121a/a855f7?text=?"
+                 alt="Avatar" />
+            <h3 id="verUsuario">—</h3>
+            <p id="verEmail" style="color:var(--text-muted); margin-bottom:12px; font-size:0.95rem;">—</p>
+            <div class="stat">País: <span id="verPais">—</span></div>
+
+            <div style="text-align: center; margin-top: 25px; margin-bottom: -10px;">
+                <h4 style="color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem; margin: 0;">Scores Máximos</h4>
+            </div>
+
+            <div class="puntuaciones-container" style="margin-top: 20px; display: flex; gap: 30px; justify-content: center; background: rgba(0,0,0,0.1); padding: 15px; border-radius: 8px;">
+                <div class="stat-puntuacion" style="text-align: center;">
+                    <span style="display:block; font-size:0.85rem; color:var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Normal</span>
+                    <strong id="verPuntuacionNormal" style="font-size:1.5rem; color:#4ade80;">0</strong>
+                </div>
+                <div class="stat-puntuacion" style="text-align: center;">
+                    <span style="display:block; font-size:0.85rem; color:var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Difícil</span>
+                    <strong id="verPuntuacionDificil" style="font-size:1.5rem; color:#f87171;">0</strong>
+                </div>
+            </div>
+
+            <div class="fila-botones" style="justify-content:center; margin-top:24px;">
+                <button class="btn btn-primario"   id="btnMostrarEdicion">Editar</button>
+                <button class="btn btn-peligro"    id="btnEliminarCuenta">Eliminar cuenta</button>
+                <button class="btn btn-secundario" onclick="localStorage.clear(); window.location.href='login.html';">Cerrar sesión</button>
+            </div>
+        </div>
+
+        <div id="formularioEdicion" class="contenedor-formulario" style="display:none;">
+            <h3>Editar perfil</h3>
+
+            <div class="parFormulario">
+                <label for="editNombre">Nombre de usuario</label>
+                <input type="text" id="editNombre" placeholder="Tu nombre" />
+            </div>
+
+            <div class="parFormulario">
+                <label for="editEmail">Email</label>
+                <input type="email" id="editEmail" placeholder="correo@ejemplo.com" />
+            </div>
+
+            <div class="parFormulario">
+                <label for="editPais">País</label>
+                <input type="text" id="editPais" placeholder="España, México..." />
+            </div>
+
+            <div class="parFormulario" style="align-items:center;">
+                <label for="editAvatarArchivo">Foto de perfil</label>
+                <input type="file" id="editAvatarArchivo" accept="image/*" />
+                <img id="editAvatarPreview" class="avatar-preview"
+                     src="https://via.placeholder.com/88x88/12121a/a855f7?text=?"
+                     alt="Preview" />
+            </div>
+
+            <div class="parFormulario">
+                <label for="editContrasena">Nueva contraseña (vacío = sin cambios)</label>
+                <input type="password" id="editContrasena" placeholder="••••••••" />
+            </div>
+
+            <div class="fila-botones">
+                <button class="btn btn-secundario" id="btnCancelarEdicion">← Cancelar</button>
+                <button class="btn btn-primario"   id="btnGuardarCambios" style="flex:1;">Guardar</button>
+            </div>
+        </div>
+
+        <div id="mensajesAlerta"></div>
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/perfil.js"></script>
+</body>
+</html>
