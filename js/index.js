@@ -1,8 +1,6 @@
 $(document).ready(function () {
-
     protegerPagina(); // redirige al login si no hay sesión
     cargarTop3();
-
 });
 
 async function cargarTop3() {

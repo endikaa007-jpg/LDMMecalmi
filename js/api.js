@@ -1,8 +1,3 @@
-/* ============================================================
-   api.js  —  PlayAlmi
-   Centralización de llamadas fetch() y gestión de sesión.
-   ============================================================ */
-
 const API_FALLBACK_URL = 'http://74.161.44.50:3000/api';
 
 function construirBasesApi() {
@@ -127,14 +122,7 @@ async function requestApi(ruta, opciones = {}) {
     throw new Error(`${detalle} Intentadas: ${bases}. Verifica que el backend este encendido y accesible.`);
 }
 
-/* ──────────────────────────────────────────
-   USUARIOS & AUTENTICACIÓN
-────────────────────────────────────────── */
-
-/**
- * Iniciar sesión (POST)
- * Envía usuario y contraseña al servidor para validar.
- */
+// logins de usuarios
 async function loginUsuario(usuario, contrasena) {
     const rutasLogin = ['/login', '/usuarios/login', '/auth/login', '/usuarios/auth/login'];
     const payloads = [
@@ -200,16 +188,12 @@ async function loginUsuario(usuario, contrasena) {
     return ultimoErrorHttp || { status: 'Error', message: 'No se pudo validar el usuario con la API.' };
 }
 
-/**
- * Obtener un usuario por ID
- */
+// obtener un usuario por id
 async function getUsuario(id) {
     return await requestApi(`/usuarios/${id}`);
 }
 
-/**
- * Crear usuario nuevo (POST)
- */
+// POST, PUT, DELETE 
 async function crearUsuario(datos) {
     return await requestApi('/usuarios', {
         method: 'POST',
@@ -217,9 +201,6 @@ async function crearUsuario(datos) {
     });
 }
 
-/**
- * Modificar usuario (PUT)
- */
 async function actualizarUsuario(id, datos) {
     return await requestApi(`/usuarios/${id}`, {
         method: 'PUT',
@@ -227,22 +208,14 @@ async function actualizarUsuario(id, datos) {
     });
 }
 
-/**
- * Eliminar usuario (DELETE)
- */
 async function eliminarUsuario(id) {
     return await requestApi(`/usuarios/${id}`, {
         method: 'DELETE'
     });
 }
 
-/* ──────────────────────────────────────────
-   PUNTUACIONES / RANKING
-────────────────────────────────────────── */
+// puntuaciones y rankings, pillar el top 10
 
-/**
- * Obtener top 10 puntuaciones (global)
- */
 async function getTop10() {
     const respuesta = await requestApi('/rankings');
     if (String(respuesta?.status || '').toLowerCase() !== 'success') {
@@ -253,16 +226,12 @@ async function getTop10() {
     return { ...respuesta, data: lista };
 }
 
-/**
- * Obtener todas las puntuaciones (sin limite)
- */
+// todas las puntuaciones
 async function getRankingCompleto() {
     return await requestApi('/rankings');
 }
 
-/**
- * Obtener todas las puntuaciones filtradas por nivel
- */
+// puntuaciones filtradas por nivel de dificultad
 async function getPuntuacionesPorNivel(nivel) {
     const respuesta = await requestApi('/rankings');
     if (String(respuesta?.status || '').toLowerCase() !== 'success') {
@@ -277,9 +246,7 @@ async function getPuntuacionesPorNivel(nivel) {
     return { ...respuesta, data: lista };
 }
 
-/**
- * Obtener puntuaciones de un jugador concreto
- */
+// puntuaciones de un jugador en concreto
 async function getPuntuacionesJugador(nickname) {
     const respuesta = await requestApi('/rankings');
     if (String(respuesta?.status || '').toLowerCase() !== 'success') {
@@ -294,45 +261,28 @@ async function getPuntuacionesJugador(nickname) {
     return { ...respuesta, data: lista };
 }
 
-/* ──────────────────────────────────────────
-   SESIÓN Y UTILIDADES
-────────────────────────────────────────── */
-
-/**
- * Guarda el objeto usuario en localStorage
- */
+// sesion y utilidades 
+// guardar el objeto en localStorage para mantener la sesión iniciada
 function guardarSesion(usuario) {
     localStorage.setItem('usuarioActual', JSON.stringify(usuario));
 }
-
-/**
- * Recupera la sesión actual del localStorage
- */
+// recuperar el objeto de sesión desde localStorage
 function obtenerSesion() {
     const datos = localStorage.getItem('usuarioActual');
     return datos ? JSON.parse(datos) : null;
 }
-
-/**
- * Borra la sesión y redirige al login
- */
+//borrar sesion al cerrar, redirigir a login
 function cerrarSesion() {
     localStorage.removeItem('usuarioActual');
     window.location.href = 'login.html';
 }
-
-/**
- * Comprueba si hay sesión. Si no, redirige fuera.
- */
+//comprobar si hay sesión activa, si no, redirigir a login
 function protegerPagina() {
     if (!obtenerSesion()) {
         window.location.href = 'login.html';
     }
 }
-
-/**
- * Muestra alertas visuales con jQuery
- */
+// mostrar alertas 
 function mostrarAlerta(mensaje, tipo = 'error') {
     const div = document.getElementById('mensajesAlerta');
     if (!div) return;
@@ -342,10 +292,7 @@ function mostrarAlerta(mensaje, tipo = 'error') {
     $(div).fadeIn(400);
     setTimeout(() => $(div).fadeOut(400), 3500);
 }
-
-/**
- * Listener automático para el botón de cerrar sesión del menú
- */
+// listener automatico para el link de cerrar sesión en el header, si existe
 $(document).ready(function () {
     $('#linkCerrarSesion').click(function (e) {
         e.preventDefault();

@@ -2,8 +2,6 @@
 $(document).ready(function () {
 
     let loginEnCurso = false;
-
-    // Si ya hay sesión activa, va directo al inicio
     if (obtenerSesion()) {
         window.location.href = 'index.html';
         return;

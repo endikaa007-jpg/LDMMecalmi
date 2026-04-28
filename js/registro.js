@@ -130,7 +130,6 @@ $(document).ready(function () {
         $('#avatarPreview').attr('src', urlLocal);
     });
 
-    // Paso 1 a Paso 2
     $('#btnSiguiente').click(function () {
         const usuario    = $('#usuario').val().trim();
         const email      = $('#email').val().trim();
@@ -159,14 +158,13 @@ $(document).ready(function () {
         });
     });
 
-    // Paso 2 a Paso 1
     $('#btnAnterior').click(function () {
         $('#paso2').fadeOut(300, function () {
             $('#paso1').fadeIn(300);
         });
     });
 
-    // Envío final (POST)
+    // Envío (POST)
     $('#btnRegistrar').click(async function () {
         $(this).prop('disabled', true).text('Enviando...');
 
