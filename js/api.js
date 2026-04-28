@@ -49,7 +49,9 @@ function limpiarMensajeServidor(mensaje) {
 function conTimeout(ms = 8000) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), ms);
-    return { controller, timer };
+    return { 
+        controller, timer 
+    };
 }
 
 function describirErrorConexion(err) {
