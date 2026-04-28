@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlayAlmi — Login</title>
+    <link rel="stylesheet" href="css/index.css" />
+</head>
+<body>
+
+    <div class="pagina-acceso">
+
+        <div class="logo-acceso">PLAYALMI</div>
+        <p class="subtitulo-acceso">Plataforma de puntuaciones</p>
+
+        <div class="contenedor-formulario">
+            <h3>Iniciar sesión</h3>
+
+            <div class="parFormulario">
+                <label for="usuario">Usuario</label>
+                <input type="text" id="usuario" placeholder="Tu nombre de usuario" autocomplete="username" />
+            </div>
+
+            <div class="parFormulario">
+                <label for="contrasena">Contraseña</label>
+                <input type="password" id="contrasena" placeholder="••••••••" autocomplete="current-password" />
+            </div>
+
+            <button class="btn btn-primario btn-full" id="btnLogin">Entrar</button>
+
+            <div class="separador">o</div>
+
+            <a href="registro.html" class="btn btn-secundario btn-full" style="margin-top:4px;">
+                Crear cuenta nueva
+            </a>
+        </div>
+
+        <div id="mensajesAlerta" style="margin-top:16px;"></div>
+
+    </div>
+
+
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/login.js"></script>
+</body>
+</html>

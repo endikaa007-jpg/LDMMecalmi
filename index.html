@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlayAlmi — Inicio</title>
+   <link rel="stylesheet" href="css/index.css" />
+</head>
+<body>
+
+    <header>
+        <div>
+            <h1>PLAYALMI</h1>
+            <span class="subtitulo">Plataforma de puntuaciones</span>
+        </div>
+        <nav>
+            <ul class="menuNivel1">
+                <li class="activo"><a href="index.html">Inicio</a></li>
+                <li><a href="ranking.html">Ranking</a></li>
+                <li><a href="perfil.html">Mi Perfil</a></li>
+                <li><a href="#" id="linkCerrarSesion">Cerrar sesión</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h2>Top <span>3</span> jugadores</h2>
+        <div id="top3" class="cargando">Cargando...</div>
+
+        <h2 style="margin-top:10px;">Accesos rápidos</h2>
+
+        <a href="ranking.html" class="tarjeta-jugador">
+            <div style="font-size:2.2rem;"></div>
+            <h3>Ranking completo</h3>
+            <p style="color:var(--text-muted); font-size:0.85rem; text-align:center;">
+                Filtra por nivel, jugador y más
+            </p>
+        </a>
+
+        <a href="perfil.html" class="tarjeta-jugador">
+            <div style="font-size:2.2rem;"></div>
+            <h3>Mi perfil</h3>
+            <p style="color:var(--text-muted); font-size:0.85rem; text-align:center;">
+                Gestiona tus datos y avatar
+            </p>
+        </a>
+
+        <div id="mensajesAlerta"></div>
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/index.js"></script>
+</body>
+</html>
