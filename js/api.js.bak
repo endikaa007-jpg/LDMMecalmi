@@ -1,0 +1,127 @@
+/* ============================================================
+   api.js  —  PlayAlmi
+   Todas las llamadas fetch() a la API de Node.js van aquí,
+   igual que en clase teníais servicios.php con las funciones
+   de base de datos centralizadas.
+   ============================================================ */
+
+// 🔧 CAMBIA ESTA URL por la IP de tu máquina virtual de Azure
+const API_URL = 'http://TU-IP-AZURE:8080/api';
+
+/* ──────────────────────────────────────────
+   USUARIOS
+────────────────────────────────────────── */
+
+// Obtener todos los usuarios
+async function getAllUsuarios() {
+    const res = await fetch(`${API_URL}/usuarios`);
+    return await res.json();
+}
+
+// Obtener un usuario por ID
+async function getUsuario(id) {
+    const res = await fetch(`${API_URL}/usuarios/${id}`);
+    return await res.json();
+}
+
+// Crear usuario nuevo (POST)
+async function crearUsuario(datos) {
+    const res = await fetch(`${API_URL}/usuarios`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(datos)
+    });
+    return await res.json();
+}
+
+// Modificar usuario (PUT)
+async function actualizarUsuario(id, datos) {
+    const res = await fetch(`${API_URL}/usuarios/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(datos)
+    });
+    return await res.json();
+}
+
+// Eliminar usuario (DELETE)
+async function eliminarUsuario(id) {
+    const res = await fetch(`${API_URL}/usuarios/${id}`, {
+        method: 'DELETE'
+    });
+    return await res.json();
+}
+
+/* ──────────────────────────────────────────
+   PUNTUACIONES / RANKING
+────────────────────────────────────────── */
+
+// Obtener top 10 puntuaciones
+async function getTop10() {
+    const res = await fetch(`${API_URL}/puntuaciones/top10`);
+    return await res.json();
+}
+
+// Obtener todas las puntuaciones
+async function getAllPuntuaciones() {
+    const res = await fetch(`${API_URL}/puntuaciones`);
+    return await res.json();
+}
+
+// Obtener puntuaciones filtradas por nivel de dificultad
+async function getPuntuacionesPorNivel(nivel) {
+    const res = await fetch(`${API_URL}/puntuaciones/nivel/${nivel}`);
+    return await res.json();
+}
+
+// Obtener puntuaciones de un jugador concreto
+async function getPuntuacionesJugador(nickname) {
+    const res = await fetch(`${API_URL}/puntuaciones/jugador/${nickname}`);
+    return await res.json();
+}
+
+// Guardar una nueva puntuación (POST)
+async function guardarPuntuacion(datos) {
+    // datos = { nickname, puntuacion, nivel_dificultad, fecha }
+    const res = await fetch(`${API_URL}/puntuaciones`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(datos)
+    });
+    return await res.json();
+}
+
+/* ──────────────────────────────────────────
+   UTILIDADES
+────────────────────────────────────────── */
+
+// Mostrar mensaje de alerta (éxito o error) — igual que en registro.js de clase
+function mostrarAlerta(mensaje, tipo = 'error') {
+    const div = document.getElementById('mensajesAlerta');
+    if (!div) return;
+    div.textContent = mensaje;
+    div.className = tipo; // 'error', 'exito' o 'info'
+    // Fade In con jQuery (igual que en clase)
+    $(div).fadeIn(400);
+    setTimeout(() => $(div).fadeOut(400), 3500);
+}
+
+// Guardar sesión en localStorage (el usuario que está logueado)
+function guardarSesion(usuario) {
+    localStorage.setItem('usuarioActual', JSON.stringify(usuario));
+}
+
+function obtenerSesion() {
+    const datos = localStorage.getItem('usuarioActual');
+    return datos ? JSON.parse(datos) : null;
+}
+
+function cerrarSesion() {
+    localStorage.removeItem('usuarioActual');
+    window.location.href = 'login.html';
+}
+
+// Marcar el elemento activo del menú — igual que en menu.php de clase con la clase "activo"
+function marcarMenuActivo(idElemento) {
+    document.getElementById(idElemento)?.classList.add('activo');
+}

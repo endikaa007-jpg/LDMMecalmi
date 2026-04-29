@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlayAlmi — Ranking</title>
+      <link rel="stylesheet" href="css/index.css" />
+</head>
+<body>
+
+    <header>
+        <div>
+            <h1>PLAYALMI</h1>
+            <span class="subtitulo">Plataforma de puntuaciones</span>
+        </div>
+        <nav>
+            <ul class="menuNivel1">
+                <li><a href="index.html">Inicio</a></li>
+                <li class="activo"><a href="ranking.html">Ranking</a></li>
+                <li><a href="perfil.html">Mi Perfil</a></li>
+                <li><a href="#" id="linkCerrarSesion">Cerrar sesión</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h2>Ranking <span>global</span></h2>
+
+        <div class="filtros">
+            <input type="text" id="filtroJugador" placeholder="Buscar jugador..." />
+            <button class="btn btn-primario" id="btnOrdenarScore">Score ↓</button>
+            <button class="btn btn-secundario" id="btnReset">Todos</button>
+        </div>
+
+        <div id="contenedorTabla" class="cargando">Cargando ranking...</div>
+
+        <div id="mensajesAlerta"></div>
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/ranking.js"></script>
+</body>
+</html>
