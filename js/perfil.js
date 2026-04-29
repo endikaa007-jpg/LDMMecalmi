@@ -264,7 +264,6 @@ async function cargarPerfil() {
     }
 
     try {
-        // 1. Traemos los datos personales
         if (typeof getUsuario === "function") {
             const respuesta = await getUsuario(usuarioActual._id);
             if (respuesta && respuesta.data) {
@@ -273,8 +272,6 @@ async function cargarPerfil() {
             }
         }
 
-        // 2. Traemos TODAS las puntuaciones del servidor usando getRankingCompleto()
-        // Hacemos esto para filtrar nosotros manualmente y evitar que falle la búsqueda de la API
         if (typeof getRankingCompleto === "function") {
             const resRanking = await getRankingCompleto();
             if (resRanking && resRanking.data) {
@@ -305,25 +302,20 @@ function mostrarDatosPerfil(u) {
     let recordNormal = 0;
     let recordDificil = 0;
 
-    // Normalizamos tu nombre para poder compararlo
+    
     const miNombre = String(nombre).toLowerCase().trim();
 
     if (u.historialPartidas && Array.isArray(u.historialPartidas)) {
         u.historialPartidas.forEach(partida => {
             
-            // Verificamos de quién es esta puntuación (buscando todas las variables posibles)
             const nombreJugador = String(partida.nombre || partida.usuario || partida.jugador || partida.nickname || '').toLowerCase().trim();
 
-            // Solo procesamos los puntos si coinciden con tu nombre (Endi)
             if (nombreJugador === miNombre) {
                 
-                // Extraemos dificultad buscando todas las variables posibles
                 const dif = String(partida.dificultad || partida.nivel || partida.level || '').toLowerCase().trim();
                 
-                // Extraemos puntos buscando todas las variables posibles
                 const puntos = Number(partida.puntuacion || partida.puntos || partida.score || partida.puntuaciones || 0);
 
-                // Asignamos la puntuación más alta a Normal o Difícil
                 if ((dif === 'normal' || dif === '1') && puntos > recordNormal) {
                     recordNormal = puntos;
                 } else if ((dif.includes('dif') || dif === 'hard' || dif === '2') && puntos > recordDificil) {
