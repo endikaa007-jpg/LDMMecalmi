@@ -103,7 +103,6 @@ async function requestApi(ruta, opciones = {}) {
                     message: limpiarMensajeServidor(data.message) || `Error HTTP ${res.status}`
                 };
 
-                // Si una base responde con ruta/metodo no valido, probamos la siguiente base.
                 if ([404, 405, 502, 503].includes(res.status)) {
                     ultimoError = new Error(errorHttp.message);
                     continue;
@@ -294,7 +293,7 @@ function mostrarAlerta(mensaje, tipo = 'error') {
     $(div).fadeIn(400);
     setTimeout(() => $(div).fadeOut(400), 3500);
 }
-// listener automatico para el link de cerrar sesión en el header, si existe
+
 $(document).ready(function () {
     $('#linkCerrarSesion').click(function (e) {
         e.preventDefault();

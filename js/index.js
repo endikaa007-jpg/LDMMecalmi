@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    protegerPagina(); // redirige al login si no hay sesión
+    protegerPagina();
     cargarTop3();
 });
 

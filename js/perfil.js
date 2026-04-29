@@ -1,5 +1,3 @@
-/* perfil.js */
-
 let usuarioActual = null;
 const AVATAR_FALLBACK = 'https://via.placeholder.com/120x120/12121a/a855f7?text=?';
 const PAISES_FALLBACK = [

@@ -108,7 +108,6 @@ async function subirAvatarCloudinary(file) {
 
 $(document).ready(function () {
 
-    // Si ya hay sesión, no tiene sentido registrarse
     if (obtenerSesion()) {
         window.location.href = 'index.html';
         return;
@@ -118,7 +117,6 @@ $(document).ready(function () {
     poblarSelectPaises(PAISES_FALLBACK);
     cargarPaisesEnSelect();
 
-    // Preview avatar desde archivo local
     $('#avatarArchivo').on('change', function () {
         const archivo = this.files && this.files[0];
         if (!archivo) {
@@ -164,7 +162,6 @@ $(document).ready(function () {
         });
     });
 
-    // Envío (POST)
     $('#btnRegistrar').click(async function () {
         $(this).prop('disabled', true).text('Enviando...');
 
