@@ -163,8 +163,7 @@ $(document).ready(function () {
     poblarSelectPaises(PAISES_FALLBACK, usuarioActual?.pais || '');
     cargarPaisesEnSelect();
     cargarPerfil();
-
-    // Preview avatar al editar
+    
     $('#editAvatarArchivo').on('change', function () {
         const archivo = this.files && this.files[0];
         if (!archivo) {

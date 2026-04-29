@@ -189,12 +189,10 @@ async function loginUsuario(usuario, contrasena) {
     return ultimoErrorHttp || { status: 'Error', message: 'No se pudo validar el usuario con la API.' };
 }
 
-// obtener un usuario por id
 async function getUsuario(id) {
     return await requestApi(`/usuarios/${id}`);
 }
 
-// POST, PUT, DELETE 
 async function crearUsuario(datos) {
     return await requestApi('/usuarios', {
         method: 'POST',
@@ -214,9 +212,6 @@ async function eliminarUsuario(id) {
         method: 'DELETE'
     });
 }
-
-// puntuaciones y rankings, pillar el top 10
-
 async function getTop10() {
     const respuesta = await requestApi('/rankings');
     if (String(respuesta?.status || '').toLowerCase() !== 'success') {
@@ -226,13 +221,9 @@ async function getTop10() {
     const lista = Array.isArray(respuesta.data) ? respuesta.data.slice(0, 10) : [];
     return { ...respuesta, data: lista };
 }
-
-// todas las puntuaciones
 async function getRankingCompleto() {
     return await requestApi('/rankings');
 }
-
-// puntuaciones filtradas por nivel de dificultad
 async function getPuntuacionesPorNivel(nivel) {
     const respuesta = await requestApi('/rankings');
     if (String(respuesta?.status || '').toLowerCase() !== 'success') {
@@ -246,8 +237,6 @@ async function getPuntuacionesPorNivel(nivel) {
 
     return { ...respuesta, data: lista };
 }
-
-// puntuaciones de un jugador en concreto
 async function getPuntuacionesJugador(nickname) {
     const respuesta = await requestApi('/rankings');
     if (String(respuesta?.status || '').toLowerCase() !== 'success') {
@@ -262,22 +251,17 @@ async function getPuntuacionesJugador(nickname) {
     return { ...respuesta, data: lista };
 }
 
-// sesion y utilidades 
-// guardar el objeto en localStorage para mantener la sesión iniciada
 function guardarSesion(usuario) {
     localStorage.setItem('usuarioActual', JSON.stringify(usuario));
 }
-// recuperar el objeto de sesión desde localStorage
 function obtenerSesion() {
     const datos = localStorage.getItem('usuarioActual');
     return datos ? JSON.parse(datos) : null;
 }
-//borrar sesion al cerrar, redirigir a login
 function cerrarSesion() {
     localStorage.removeItem('usuarioActual');
     window.location.href = 'login.html';
 }
-//comprobar si hay sesión activa, si no, redirigir a login
 function protegerPagina() {
     if (!obtenerSesion()) {
         window.location.href = 'login.html';
@@ -288,7 +272,7 @@ function mostrarAlerta(mensaje, tipo = 'error') {
     const div = document.getElementById('mensajesAlerta');
     if (!div) return;
     div.textContent = mensaje;
-    div.className = tipo; // 'error', 'exito' o 'info'
+    div.className = tipo; 
     
     $(div).fadeIn(400);
     setTimeout(() => $(div).fadeOut(400), 3500);

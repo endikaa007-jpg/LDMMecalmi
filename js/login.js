@@ -6,8 +6,6 @@ $(document).ready(function () {
         window.location.href = 'index.html';
         return;
     }
-
-    // Login con Enter en contraseña
     $('#contrasena').keypress(function (e) {
         if (e.which === 13) $('#btnLogin').click();
     });
