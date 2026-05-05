@@ -2,15 +2,15 @@ const API_FALLBACK_URL = 'http://74.161.44.50:3000/api';
 
 function construirBasesApi() {
     const guardada = localStorage.getItem('apiBaseUrl');
-    const origenActual = window.location.origin;
-    const desdeHostActual = `${window.location.protocol}//${window.location.hostname}:3000/api`;
+    const origen   = window.location.origin;
+    const desdeHost = window.location.protocol + '//' + window.location.hostname + ':3000/api';
 
     const candidatas = [
         guardada,
         API_FALLBACK_URL,
         '/api',
-        `${origenActual}/api`,
-        desdeHostActual,
+        origen + '/api',
+        desdeHost,
         'http://localhost:3000/api',
         'http://127.0.0.1:3000/api'
     ].filter(Boolean);
@@ -19,10 +19,11 @@ function construirBasesApi() {
 }
 
 let API_BASES = construirBasesApi();
-let API_URL = API_BASES[0];
+let API_URL   = API_BASES[0];
 
 async function parsearRespuesta(res) {
     const tipo = res.headers.get('content-type') || '';
+
     if (tipo.includes('application/json')) {
         return await res.json();
     }
@@ -34,32 +35,32 @@ async function parsearRespuesta(res) {
 function limpiarMensajeServidor(mensaje) {
     if (!mensaje) return '';
 
-    const textoPlano = String(mensaje)
+    const limpio = String(mensaje)
         .replace(/<[^>]*>/g, ' ')
         .replace(/\s+/g, ' ')
         .trim();
 
-    if (/Cannot\s+(GET|POST|PUT|DELETE)\s+/i.test(textoPlano)) {
+    if (/Cannot\s+(GET|POST|PUT|DELETE)\s+/i.test(limpio)) {
         return 'Ruta no disponible en el servidor.';
     }
 
-    return textoPlano;
+    return limpio;
 }
 
-function conTimeout(ms = 8000) {
+function crearTimeout(ms) {
+    ms = ms || 8000;
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), ms);
-    return { 
-        controller, timer 
-    };
+    const timer = setTimeout(function() { controller.abort(); }, ms);
+    return { controller: controller, timer: timer };
 }
 
 function describirErrorConexion(err) {
-    if (err?.name === 'AbortError') {
+    if (err && err.name === 'AbortError') {
         return 'Tiempo de espera agotado al conectar con la API.';
     }
 
-    const texto = String(err?.message || '').toLowerCase();
+    const texto = String((err && err.message) || '').toLowerCase();
+
     if (
         texto.includes('failed to fetch') ||
         texto.includes('networkerror') ||
@@ -69,38 +70,38 @@ function describirErrorConexion(err) {
         return 'No se pudo establecer conexion con la API.';
     }
 
-    return err?.message || 'Error de red al conectar con la API.';
+    return (err && err.message) || 'Error de red al conectar con la API.';
 }
 
-async function requestApi(ruta, opciones = {}) {
+async function requestApi(ruta, opciones) {
+    opciones = opciones || {};
     let ultimoError = null;
     const intentadas = [];
-    const headers = {
-        'Content-Type': 'application/json',
-        ...(opciones.headers || {})
-    };
 
-    for (const base of API_BASES) {
-        const { controller, timer } = conTimeout();
+    const headers = Object.assign({ 'Content-Type': 'application/json' }, opciones.headers || {});
+
+    for (let i = 0; i < API_BASES.length; i++) {
+        const base = API_BASES[i];
+        const t = crearTimeout();
         intentadas.push(base);
 
         try {
-            const res = await fetch(`${base}${ruta}`, {
-                ...opciones,
-                headers,
-                signal: controller.signal
-            });
+            const res = await fetch(base + ruta, Object.assign({}, opciones, {
+                headers: headers,
+                signal: t.controller.signal
+            }));
 
-            clearTimeout(timer);
+            clearTimeout(t.timer);
             API_URL = base;
             localStorage.setItem('apiBaseUrl', base);
+
             const data = await parsearRespuesta(res);
 
             if (!res.ok) {
                 const errorHttp = {
                     status: 'Error',
                     statusCode: res.status,
-                    message: limpiarMensajeServidor(data.message) || `Error HTTP ${res.status}`
+                    message: limpiarMensajeServidor(data.message) || 'Error HTTP ' + res.status
                 };
 
                 if ([404, 405, 502, 503].includes(res.status)) {
@@ -112,45 +113,50 @@ async function requestApi(ruta, opciones = {}) {
             }
 
             return data;
+
         } catch (err) {
-            clearTimeout(timer);
+            clearTimeout(t.timer);
             ultimoError = err;
         }
     }
 
     const detalle = describirErrorConexion(ultimoError);
     const bases = intentadas.join(' | ');
-    throw new Error(`${detalle} Intentadas: ${bases}. Verifica que el backend este encendido y accesible.`);
+    throw new Error(detalle + ' Intentadas: ' + bases + '. Verifica que el backend este encendido y accesible.');
 }
 
-// logins de usuarios
 async function loginUsuario(usuario, contrasena) {
     const rutasLogin = ['/login', '/usuarios/login', '/auth/login', '/usuarios/auth/login'];
     const payloads = [
-        { nombre: usuario, contrasena },
-        { usuario, contrasena },
+        { nombre: usuario, contrasena: contrasena },
+        { usuario: usuario, contrasena: contrasena },
         { user: usuario, pass: contrasena },
         { user: usuario, password: contrasena },
-        { email: usuario, contrasena },
-        { nickname: usuario, contrasena }
+        { email: usuario, contrasena: contrasena },
+        { nickname: usuario, contrasena: contrasena }
     ];
 
     let ultimoErrorHttp = null;
 
-    for (const ruta of rutasLogin) {
-        for (const payload of payloads) {
-            for (const base of API_BASES) {
-                const { controller, timer } = conTimeout();
+    for (let r = 0; r < rutasLogin.length; r++) {
+        const ruta = rutasLogin[r];
+
+        for (let p = 0; p < payloads.length; p++) {
+            const payload = payloads[p];
+
+            for (let b = 0; b < API_BASES.length; b++) {
+                const base = API_BASES[b];
+                const t = crearTimeout();
 
                 try {
-                    const res = await fetch(`${base}${ruta}`, {
+                    const res = await fetch(base + ruta, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload),
-                        signal: controller.signal
+                        signal: t.controller.signal
                     });
 
-                    clearTimeout(timer);
+                    clearTimeout(t.timer);
                     const data = await parsearRespuesta(res);
 
                     if (res.ok) {
@@ -162,21 +168,22 @@ async function loginUsuario(usuario, contrasena) {
                     const errorHttp = {
                         status: 'Error',
                         statusCode: res.status,
-                        message: limpiarMensajeServidor(data?.message) || `Error HTTP ${res.status}`
+                        message: limpiarMensajeServidor((data && data.message)) || 'Error HTTP ' + res.status
                     };
 
-                    const mensaje = String(errorHttp.message || '').toLowerCase();
-                    const esRutaMetodo = [404, 405].includes(res.status) || mensaje.includes('cannot post') || mensaje.includes('ruta no disponible');
-                    const esUsuarioNoEncontrado = res.status === 401 && (mensaje.includes('usuario no encontrado') || mensaje.includes('user not found'));
+                    const msg = String(errorHttp.message || '').toLowerCase();
+                    const esRutaInvalida = [404, 405].includes(res.status) || msg.includes('cannot post') || msg.includes('ruta no disponible');
+                    const esUsuarioInvalido = res.status === 401 && (msg.includes('usuario no encontrado') || msg.includes('user not found'));
 
-                    if (esRutaMetodo || esUsuarioNoEncontrado) {
+                    if (esRutaInvalida || esUsuarioInvalido) {
                         ultimoErrorHttp = errorHttp;
                         continue;
                     }
 
                     return errorHttp;
+
                 } catch (err) {
-                    clearTimeout(timer);
+                    clearTimeout(t.timer);
                     ultimoErrorHttp = {
                         status: 'Error',
                         message: describirErrorConexion(err)
@@ -190,7 +197,7 @@ async function loginUsuario(usuario, contrasena) {
 }
 
 async function getUsuario(id) {
-    return await requestApi(`/usuarios/${id}`);
+    return await requestApi('/usuarios/' + id);
 }
 
 async function crearUsuario(datos) {
@@ -201,81 +208,97 @@ async function crearUsuario(datos) {
 }
 
 async function actualizarUsuario(id, datos) {
-    return await requestApi(`/usuarios/${id}`, {
+    return await requestApi('/usuarios/' + id, {
         method: 'PUT',
         body: JSON.stringify(datos)
     });
 }
 
 async function eliminarUsuario(id) {
-    return await requestApi(`/usuarios/${id}`, {
+    return await requestApi('/usuarios/' + id, {
         method: 'DELETE'
     });
 }
+
 async function getTop10() {
     const respuesta = await requestApi('/rankings');
-    if (String(respuesta?.status || '').toLowerCase() !== 'success') {
+
+    if (String((respuesta && respuesta.status) || '').toLowerCase() !== 'success') {
         return respuesta;
     }
 
     const lista = Array.isArray(respuesta.data) ? respuesta.data.slice(0, 10) : [];
-    return { ...respuesta, data: lista };
+    return Object.assign({}, respuesta, { data: lista });
 }
+
 async function getRankingCompleto() {
     return await requestApi('/rankings');
 }
+
 async function getPuntuacionesPorNivel(nivel) {
     const respuesta = await requestApi('/rankings');
-    if (String(respuesta?.status || '').toLowerCase() !== 'success') {
+
+    if (String((respuesta && respuesta.status) || '').toLowerCase() !== 'success') {
         return respuesta;
     }
 
     const nivelNormalizado = String(nivel || '').toLowerCase();
     const lista = Array.isArray(respuesta.data)
-        ? respuesta.data.filter(item => String(item?.dificultad || '').toLowerCase() === nivelNormalizado)
+        ? respuesta.data.filter(function(item) {
+            return String((item && item.dificultad) || '').toLowerCase() === nivelNormalizado;
+          })
         : [];
 
-    return { ...respuesta, data: lista };
+    return Object.assign({}, respuesta, { data: lista });
 }
+
 async function getPuntuacionesJugador(nickname) {
     const respuesta = await requestApi('/rankings');
-    if (String(respuesta?.status || '').toLowerCase() !== 'success') {
+
+    if (String((respuesta && respuesta.status) || '').toLowerCase() !== 'success') {
         return respuesta;
     }
 
     const jugadorNormalizado = String(nickname || '').toLowerCase();
     const lista = Array.isArray(respuesta.data)
-        ? respuesta.data.filter(item => String(item?.nombre || '').toLowerCase().includes(jugadorNormalizado))
+        ? respuesta.data.filter(function(item) {
+            return String((item && item.nombre) || '').toLowerCase().includes(jugadorNormalizado);
+          })
         : [];
 
-    return { ...respuesta, data: lista };
+    return Object.assign({}, respuesta, { data: lista });
 }
 
 function guardarSesion(usuario) {
     localStorage.setItem('usuarioActual', JSON.stringify(usuario));
 }
+
 function obtenerSesion() {
     const datos = localStorage.getItem('usuarioActual');
     return datos ? JSON.parse(datos) : null;
 }
+
 function cerrarSesion() {
     localStorage.removeItem('usuarioActual');
     window.location.href = 'login.html';
 }
+
 function protegerPagina() {
     if (!obtenerSesion()) {
         window.location.href = 'login.html';
     }
 }
-// mostrar alertas 
-function mostrarAlerta(mensaje, tipo = 'error') {
+
+function mostrarAlerta(mensaje, tipo) {
+    tipo = tipo || 'error';
     const div = document.getElementById('mensajesAlerta');
     if (!div) return;
+
     div.textContent = mensaje;
-    div.className = tipo; 
-    
+    div.className = tipo;
+
     $(div).fadeIn(400);
-    setTimeout(() => $(div).fadeOut(400), 3500);
+    setTimeout(function() { $(div).fadeOut(400); }, 3500);
 }
 
 $(document).ready(function () {

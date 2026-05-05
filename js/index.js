@@ -6,41 +6,38 @@ $(document).ready(function () {
 async function cargarTop3() {
     try {
         const datos = await getTop10();
-        const jugadores = Array.isArray(datos?.data)
-            ? datos.data.map((j) => ({
-                usuario: j?.usuario || j?.nombre || 'Jugador',
-                puntuacion: Number(j?.puntuacion ?? j?.score ?? 0),
-                nivel_dificultad: j?.nivel_dificultad || j?.dificultad || 'normal',
-                urlavatar: j?.urlavatar || j?.avatarUrl || ''
-            }))
-            : [];
+        const lista = datos && Array.isArray(datos.data) ? datos.data : [];
         const contenedor = document.getElementById('top3');
+
         contenedor.innerHTML = '';
 
-        if (jugadores.length === 0) {
+        if (lista.length === 0) {
             contenedor.innerHTML = '<p class="cargando">Aún no hay puntuaciones registradas.</p>';
             return;
         }
 
-        const clasePos  = ['pos-1', 'pos-2', 'pos-3'];
-        const numPos    = ['1', '2', '3'];
-        const top3      = jugadores.slice(0, 3);
+        const clasePos = ['pos-1', 'pos-2', 'pos-3'];
+        const numPos = ['1', '2', '3'];
+        const top3 = lista.slice(0, 3);
 
-        top3.forEach((j, i) => {
-            const tarjeta = document.createElement('div');
+        top3.forEach(function (j, i) {
+            const tarjeta  = document.createElement('div');
             tarjeta.className = 'tarjeta-jugador';
 
-            const avatarHTML = j.urlavatar
-                ? `<img class="avatar" src="${j.urlavatar}" alt="Avatar">`
-                : `<div style="font-size:2.5rem;"></div>`;
+            const nombre = j.usuario || j.nombre || 'Jugador';
+            const puntuacion = Number(j.puntuacion || j.score || 0);
+            const nivel = j.nivel_dificultad || j.dificultad || 'normal';
+            const avatar = j.urlavatar || j.avatarUrl || '';
 
-            tarjeta.innerHTML = `
-                <div class="posicion ${clasePos[i]}">${numPos[i]}º</div>
-                ${avatarHTML}
-                <h3>${j.usuario}</h3>
-                <div class="puntuacion">${j.puntuacion} pts</div>
-                <div class="nivel">${j.nivel_dificultad || 'normal'}</div>
-            `;
+            const avatarHTML = avatar
+                ? '<img class="avatar" src="' + avatar + '" alt="Avatar">'
+                : '<div style="font-size:2.5rem;"></div>';
+
+            tarjeta.innerHTML = '<div class="posicion ' + clasePos[i] + '">' + numPos[i] + 'º</div>';
+            tarjeta.innerHTML += avatarHTML;
+            tarjeta.innerHTML += '<h3>' + nombre + '</h3>';
+            tarjeta.innerHTML += '<div class="puntuacion">' + puntuacion + ' pts</div>';
+            tarjeta.innerHTML += '<div class="nivel">' + nivel + '</div>';
 
             $(tarjeta).hide();
             contenedor.appendChild(tarjeta);

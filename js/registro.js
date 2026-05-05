@@ -5,20 +5,33 @@ const PAISES_FALLBACK = [
     'Paraguay', 'Perú', 'Portugal', 'República Dominicana', 'Uruguay', 'Venezuela'
 ];
 
-function poblarSelectPaises(paises = []) {
+function convertirInputPaisASelect() {
+    const campoPais = document.getElementById('editPais');
+    if (!campoPais || campoPais.tagName !== 'INPUT') return;
+
+    const select = document.createElement('select');
+    select.id = campoPais.id;
+    select.className = campoPais.className;
+
+    campoPais.parentNode.replaceChild(select, campoPais);
+}
+
+function poblarSelectPaises(paises) {
+    paises = paises || [];
     const campoPais = document.getElementById('editPais');
     if (!campoPais || campoPais.tagName !== 'SELECT') return;
 
-    const ordenados = Array.from(new Set((paises || []).filter(Boolean)))
-        .sort((a, b) => a.localeCompare(b, 'es'));
+    const ordenados = Array.from(new Set(paises.filter(Boolean)))
+        .sort(function (a, b) { return a.localeCompare(b, 'es'); });
 
     campoPais.innerHTML = '';
+
     const placeholder = document.createElement('option');
     placeholder.value = '';
     placeholder.textContent = 'Selecciona un país';
     campoPais.appendChild(placeholder);
 
-    ordenados.forEach((pais) => {
+    ordenados.forEach(function (pais) {
         const option = document.createElement('option');
         option.value = pais;
         option.textContent = pais;
@@ -28,59 +41,33 @@ function poblarSelectPaises(paises = []) {
     campoPais.value = '';
 }
 
-function convertirInputPaisASelect() {
-    const campoPais = document.getElementById('editPais');
-    if (!campoPais || campoPais.tagName !== 'INPUT') return;
-
-    const select = document.createElement('select');
-    select.id = campoPais.id;
-    select.className = campoPais.className;
-
-    const parent = campoPais.parentNode;
-    parent.replaceChild(select, campoPais);
-}
-
 async function cargarPaisesEnSelect() {
     try {
         const res = await fetch('https://restcountries.com/v3.1/all?fields=name');
         const data = await res.json();
-
         const paises = Array.isArray(data)
-            ? data
-                .map((item) => item?.name?.common)
-                .filter(Boolean)
+            ? data.map(function (item) { return item && item.name && item.name.common; }).filter(Boolean)
             : [];
 
-        if (paises.length === 0) {
-            poblarSelectPaises(PAISES_FALLBACK);
-            return;
-        }
+        poblarSelectPaises(paises.length > 0 ? paises : PAISES_FALLBACK);
 
-        poblarSelectPaises(paises);
-    } catch (error) {
+    } catch (err) {
         poblarSelectPaises(PAISES_FALLBACK);
     }
 }
 
 function obtenerConfigCloudinary() {
-    const cloudName =
-        localStorage.getItem('cloudinaryCloudName') ||
-        localStorage.getItem('dsclootiu') ||
-        'dsclootiu';
-
-    const uploadPreset =
-        localStorage.getItem('cloudinaryUploadPreset') ||
-        localStorage.getItem('Mecalmi') ||
-        'Mecalmi';
-
-    return { cloudName, uploadPreset };
+    const cloudName = localStorage.getItem('cloudinaryCloudName') || localStorage.getItem('dsclootiu') || 'dsclootiu';
+    const uploadPreset = localStorage.getItem('cloudinaryUploadPreset') || localStorage.getItem('Mecalmi') || 'Mecalmi';
+    return { cloudName: cloudName, uploadPreset: uploadPreset };
 }
 
 async function subirAvatarCloudinary(file) {
     if (!file) return '';
 
-    const { cloudName, uploadPreset } = obtenerConfigCloudinary();
-    if (!cloudName || !uploadPreset) {
+    const config = obtenerConfigCloudinary();
+
+    if (!config.cloudName || !config.uploadPreset) {
         throw new Error('Falta configurar Cloudinary (cloud name y upload preset).');
     }
 
@@ -90,17 +77,18 @@ async function subirAvatarCloudinary(file) {
 
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('upload_preset', uploadPreset);
+    formData.append('upload_preset', config.uploadPreset);
     formData.append('folder', 'playalmi/avatars');
 
-    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+    const res  = await fetch('https://api.cloudinary.com/v1_1/' + config.cloudName + '/image/upload', {
         method: 'POST',
         body: formData
     });
 
     const data = await res.json();
-    if (!res.ok || !data?.secure_url) {
-        throw new Error(data?.error?.message || 'No se pudo subir la imagen a Cloudinary.');
+
+    if (!res.ok || !data.secure_url) {
+        throw new Error((data.error && data.error.message) || 'No se pudo subir la imagen a Cloudinary.');
     }
 
     return data.secure_url;
@@ -119,23 +107,23 @@ $(document).ready(function () {
 
     $('#avatarArchivo').on('change', function () {
         const archivo = this.files && this.files[0];
+
         if (!archivo) {
             $('#avatarPreview').attr('src', AVATAR_FALLBACK);
             return;
         }
 
-        const urlLocal = URL.createObjectURL(archivo);
-        $('#avatarPreview').attr('src', urlLocal);
+        $('#avatarPreview').attr('src', URL.createObjectURL(archivo));
     });
 
     $('#btnSiguiente').click(function () {
-        const usuario    = $('#usuario').val().trim();
-        const email      = $('#email').val().trim();
+        const usuario = $('#usuario').val().trim();
+        const email = $('#email').val().trim();
         const contrasena = $('#contrasena').val();
-        const recontras  = $('#recontrasena').val();
+        const recontras = $('#recontrasena').val();
 
         if (usuario.length < 3) {
-            mostrarAlerta('El usuario debe tener al menos 3 caracteres.', 'error'); 
+            mostrarAlerta('El usuario debe tener al menos 3 caracteres.', 'error');
             return;
         }
         if (!email.includes('@')) {
@@ -143,29 +131,26 @@ $(document).ready(function () {
             return;
         }
         if (contrasena.length < 6) {
-            mostrarAlerta('La contraseña debe tener al menos 6 caracteres.', 'error'); 
+            mostrarAlerta('La contraseña debe tener al menos 6 caracteres.', 'error');
             return;
         }
         if (contrasena !== recontras) {
-            mostrarAlerta('Las contraseñas no coinciden.', 'error'); 
+            mostrarAlerta('Las contraseñas no coinciden.', 'error');
             return;
         }
 
-        $('#paso1').fadeOut(300, function () {
-            $('#paso2').fadeIn(300);
-        });
+        $('#paso1').fadeOut(300, function () { $('#paso2').fadeIn(300); });
     });
 
     $('#btnAnterior').click(function () {
-        $('#paso2').fadeOut(300, function () {
-            $('#paso1').fadeIn(300);
-        });
+        $('#paso2').fadeOut(300, function () { $('#paso1').fadeIn(300); });
     });
 
     $('#btnRegistrar').click(async function () {
         $(this).prop('disabled', true).text('Enviando...');
 
-        const archivoAvatar = document.getElementById('avatarArchivo')?.files?.[0] || null;
+        const archivoAvatar = document.getElementById('avatarArchivo');
+        const archivo = archivoAvatar && archivoAvatar.files && archivoAvatar.files[0] || null;
 
         const nuevoUsuario = {
             nombre: $('#usuario').val().trim(),
@@ -176,9 +161,9 @@ $(document).ready(function () {
         };
 
         try {
-            if (archivoAvatar) {
+            if (archivo) {
                 $('#btnRegistrar').text('Subiendo foto...');
-                nuevoUsuario.avatarUrl = await subirAvatarCloudinary(archivoAvatar);
+                nuevoUsuario.avatarUrl = await subirAvatarCloudinary(archivo);
                 $('#btnRegistrar').text('Enviando...');
             }
 
@@ -187,15 +172,16 @@ $(document).ready(function () {
             if (respuesta.data) {
                 guardarSesion(respuesta.data);
                 mostrarAlerta('¡Cuenta creada! Redirigiendo...', 'exito');
-                setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+                setTimeout(function () { window.location.href = 'index.html'; }, 1500);
             } else {
                 mostrarAlerta(respuesta.message || 'Error al registrar.', 'error');
                 $('#btnRegistrar').prop('disabled', false).text('✓ Registrarse');
             }
+
         } catch (err) {
             console.error(err);
             mostrarAlerta(err.message || 'Error de conexión con el servidor.', 'error');
-            $('#btnRegistrar').prop('disabled', false).text('✓ Registrarse');
+            $('#btnRegistrar').prop('disabled', false).text('Registrarse');
         }
     });
 

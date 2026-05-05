@@ -1,5 +1,5 @@
 let todasLasPuntuaciones = [];
-let ordenarScoreDesc = true;
+let ordenarScoreDesc     = true;
 
 $(document).ready(function () {
 
@@ -26,17 +26,20 @@ $(document).ready(function () {
 
 async function cargarRanking() {
     try {
-        const datos = await getTop10();
-        const listaApi = Array.isArray(datos?.data) ? datos.data : [];
+        const datos    = await getTop10();
+        const listaApi = datos && Array.isArray(datos.data) ? datos.data : [];
 
-        todasLasPuntuaciones = listaApi.map(item => ({
-            usuario: item?.usuario || item?.nombre || 'Anónimo',
-            puntuacion: Number(item?.puntuacion ?? item?.score ?? 0),
-            nivel_dificultad: item?.nivel_dificultad || item?.dificultad || 'normal',
-            pais: item?.pais || 'No indicado'
-        }));
+        todasLasPuntuaciones = listaApi.map(function (item) {
+            return {
+                usuario: (item && item.usuario) || (item && item.nombre) || 'Anónimo',
+                puntuacion: Number((item && item.puntuacion) || (item && item.score) || 0),
+                nivel_dificultad: (item && item.nivel_dificultad) || (item && item.dificultad) || 'normal',
+                pais: (item && item.pais) || 'No indicado'
+            };
+        });
 
         renderizarTabla(todasLasPuntuaciones);
+
     } catch (err) {
         console.error(err);
         mostrarAlerta(err.message || 'Error al cargar el ranking.', 'error');
@@ -45,17 +48,20 @@ async function cargarRanking() {
 
 async function cargarRankingCompleto() {
     try {
-        const datos = await getRankingCompleto();
-        const listaApi = Array.isArray(datos?.data) ? datos.data : [];
+        const datos    = await getRankingCompleto();
+        const listaApi = datos && Array.isArray(datos.data) ? datos.data : [];
 
-        todasLasPuntuaciones = listaApi.map(item => ({
-            usuario: item?.usuario || item?.nombre || 'Anónimo',
-            puntuacion: Number(item?.puntuacion ?? item?.score ?? 0),
-            nivel_dificultad: item?.nivel_dificultad || item?.dificultad || 'normal',
-            pais: item?.pais || 'No indicado'
-        }));
+        todasLasPuntuaciones = listaApi.map(function (item) {
+            return {
+                usuario: (item && item.usuario) || (item && item.nombre) || 'Anónimo',
+                puntuacion: Number((item && item.puntuacion) || (item && item.score) || 0),
+                nivel_dificultad: (item && item.nivel_dificultad) || (item && item.dificultad) || 'normal',
+                pais: (item && item.pais) || 'No indicado'
+            };
+        });
 
         renderizarTabla(todasLasPuntuaciones);
+
     } catch (err) {
         console.error(err);
         mostrarAlerta(err.message || 'Error al cargar todas las partidas.', 'error');
@@ -64,16 +70,15 @@ async function cargarRankingCompleto() {
 
 function aplicarFiltros() {
     const jugador = $('#filtroJugador').val().toLowerCase().trim();
-
-    let filtrados = [...todasLasPuntuaciones];
+    let filtrados = todasLasPuntuaciones.slice();
 
     if (jugador) {
-        filtrados = filtrados.filter(p =>
-            (p.usuario || '').toLowerCase().includes(jugador)
-        );
+        filtrados = filtrados.filter(function (p) {
+            return (p.usuario || '').toLowerCase().includes(jugador);
+        });
     }
 
-    filtrados.sort((a, b) => {
+    filtrados.sort(function (a, b) {
         const pa = Number(a.puntuacion) || 0;
         const pb = Number(b.puntuacion) || 0;
         return ordenarScoreDesc ? pb - pa : pa - pb;
@@ -90,37 +95,22 @@ function renderizarTabla(puntuaciones) {
         return;
     }
 
-    const medallaPos = (i) => `${i + 1}`;
+    let filas = '';
 
-    let html = `
-        <table class="tabla-ranking">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Jugador</th>
-                    <th>País</th>
-                    <th>Puntuación</th>
-                    <th>Nivel</th>
-                </tr>
-            </thead>
-            <tbody>
-    `;
-
-    puntuaciones.forEach((p, i) => {
-        html += `
-            <tr>
-                <td>${medallaPos(i)}</td>
-                <td>${p.usuario}</td>
-                <td>${p.pais || 'No indicado'}</td>
-                <td class="pts">${p.puntuacion} pts</td>
-                <td style="color:var(--text-muted); text-transform:uppercase; font-size:0.82rem; letter-spacing:1px;">
-                    ${p.nivel_dificultad || 'normal'}
-                </td>
-            </tr>
-        `;
+    puntuaciones.forEach(function (p, i) {
+        filas += '<tr>';
+        filas += '<td>' + (i + 1) + '</td>';
+        filas += '<td>' + p.usuario + '</td>';
+        filas += '<td>' + (p.pais || 'No indicado') + '</td>';
+        filas += '<td class="pts">' + p.puntuacion + ' pts</td>';
+        filas += '<td class="col-nivel">' + (p.nivel_dificultad || 'normal') + '</td>';
+        filas += '</tr>';
     });
 
-    html += '</tbody></table>';
+    const html = '<table class="tabla-ranking">'
+        + '<thead><tr><th>#</th><th>Jugador</th><th>País</th><th>Puntuación</th><th>Nivel</th></tr></thead>'
+        + '<tbody>' + filas + '</tbody>'
+        + '</table>';
 
     $(contenedor).fadeOut(150, function () {
         contenedor.innerHTML = html;
