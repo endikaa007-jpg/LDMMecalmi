@@ -175,7 +175,11 @@ async function loginUsuario(usuario, contrasena) {
                     const esRutaInvalida = [404, 405].includes(res.status) || msg.includes('cannot post') || msg.includes('ruta no disponible');
                     const esUsuarioInvalido = res.status === 401 && (msg.includes('usuario no encontrado') || msg.includes('user not found'));
 
-                    if (esRutaInvalida || esUsuarioInvalido) {
+                    if (esUsuarioInvalido) {
+                        return errorHttp;
+                    }
+
+                    if (esRutaInvalida) {
                         ultimoErrorHttp = errorHttp;
                         continue;
                     }
