@@ -2,9 +2,13 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Orbitron:wght@700;900&display=swap" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Almi Birds — Registro</title>
-    <link rel="stylesheet" href="css/index.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/registro.css" />
 </head>
 <body>
 
@@ -38,7 +42,7 @@
                     <input type="password" id="recontrasena" placeholder="••••••••" />
                 </div>
 
-                <button class="btn btn-primario btn-full" id="btnSiguiente">Siguiente →</button>
+                <button class="btn btn-primario btn-full" id="btnSiguiente">Siguiente</button>
 
                 <div class="separador">¿Ya tienes cuenta?</div>
                 <a href="login.html" class="btn btn-secundario btn-full">Iniciar sesión</a>
@@ -47,33 +51,30 @@
             <div id="paso2" style="display:none;">
                 <h3>Paso 2 — Perfil</h3>
 
+                <div class="parFormulario">
+                    <label for="editPais">País</label>
+                    <input type="text" id="editPais" placeholder="España, México..." />
+                </div>
 
-            <div class="parFormulario">
-                <label for="editPais">País</label>
-                <input type="text" id="editPais" placeholder="España, México..." />
-            </div>
-
-                <div class="parFormulario" style="align-items:center;">
+                <div class="parFormulario">
                     <label for="avatarArchivo">Foto de perfil</label>
                     <input type="file" id="avatarArchivo" accept="image/*" />
                     <img id="avatarPreview" class="avatar-preview"
-                         src="https://via.placeholder.com/88x88/12121a/a855f7?text=?"
+                         src="img/avatar_defecto.png"
                          alt="Preview avatar" />
                 </div>
 
                 <div class="fila-botones">
-                    <button class="btn btn-secundario" id="btnAnterior">← Volver</button>
-                    <button class="btn btn-primario" id="btnRegistrar" style="flex:1;">✓ Registrarse</button>
+                    <button class="btn btn-secundario" id="btnAnterior">Volver</button>
+                    <button class="btn btn-primario" id="btnRegistrar">Registrarse</button>
                 </div>
             </div>
 
         </div>
 
-        <div id="mensajesAlerta" style="margin-top:16px;"></div>
+        <div id="mensajesAlerta"></div>
 
     </div>
-
-
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="js/api.js"></script>

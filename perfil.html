@@ -2,9 +2,15 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <!-- preconnect para que el navegador conecte con Google Fonts antes de necesitarlas -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- carga de fuentes en el head para evitar el destello de texto sin estilo -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Orbitron:wght@700;900&display=swap" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Almi Birds — Mi Perfil</title>
-   <link rel="stylesheet" href="css/index.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/perfil.css" />
 </head>
 <body>
 
@@ -24,32 +30,30 @@
     </header>
 
     <main>
-        <h2>👤 Mi <span>perfil</span></h2>
+        <h2>Mi <span>perfil</span></h2>
 
         <div id="vistaPerfil" class="perfil-card" style="display:none;">
             <img id="avatarGrande" class="avatar-grande"
-                 src="https://via.placeholder.com/120x120/12121a/a855f7?text=?"
+                 src="img/avatar_defecto.png"
                  alt="Avatar" />
             <h3 id="verUsuario">—</h3>
-            <p id="verEmail" style="color:var(--text-muted); margin-bottom:12px; font-size:0.95rem;">—</p>
+            <p id="verEmail" class="email-perfil">—</p>
             <div class="stat">País: <span id="verPais">—</span></div>
 
-            <div style="text-align: center; margin-top: 25px; margin-bottom: -10px;">
-                <h4 style="color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem; margin: 0;">Scores Máximos</h4>
-            </div>
+            <h4 class="titulo-scores">Scores Máximos</h4>
 
-            <div class="puntuaciones-container" style="margin-top: 20px; display: flex; gap: 30px; justify-content: center; background: rgba(0,0,0,0.1); padding: 15px; border-radius: 8px;">
-                <div class="stat-puntuacion" style="text-align: center;">
-                    <span style="display:block; font-size:0.85rem; color:var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Normal</span>
-                    <strong id="verPuntuacionNormal" style="font-size:1.5rem; color:#4ade80;">0</strong>
+            <div class="puntuaciones-container">
+                <div class="stat-puntuacion">
+                    <span>Normal</span>
+                    <strong id="verPuntuacionNormal" class="puntuacion-normal">0</strong>
                 </div>
-                <div class="stat-puntuacion" style="text-align: center;">
-                    <span style="display:block; font-size:0.85rem; color:var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Difícil</span>
-                    <strong id="verPuntuacionDificil" style="font-size:1.5rem; color:#f87171;">0</strong>
+                <div class="stat-puntuacion">
+                    <span>Difícil</span>
+                    <strong id="verPuntuacionDificil" class="puntuacion-dificil">0</strong>
                 </div>
             </div>
 
-            <div class="fila-botones" style="justify-content:center; margin-top:24px;">
+            <div class="fila-botones botones-perfil">
                 <button class="btn btn-primario"   id="btnMostrarEdicion">Editar</button>
                 <button class="btn btn-peligro"    id="btnEliminarCuenta">Eliminar cuenta</button>
                 <button class="btn btn-secundario" onclick="localStorage.clear(); window.location.href='login.html';">Cerrar sesión</button>
@@ -74,11 +78,11 @@
                 <input type="text" id="editPais" placeholder="España, México..." />
             </div>
 
-            <div class="parFormulario" style="align-items:center;">
+            <div class="parFormulario">
                 <label for="editAvatarArchivo">Foto de perfil</label>
                 <input type="file" id="editAvatarArchivo" accept="image/*" />
                 <img id="editAvatarPreview" class="avatar-preview"
-                     src="https://via.placeholder.com/88x88/12121a/a855f7?text=?"
+                     src="img/avatar_defecto.png"
                      alt="Preview" />
             </div>
 
@@ -89,10 +93,21 @@
 
             <div class="fila-botones">
                 <button class="btn btn-secundario" id="btnCancelarEdicion">← Cancelar</button>
-                <button class="btn btn-primario"   id="btnGuardarCambios" style="flex:1;">Guardar</button>
+                <button class="btn btn-primario"   id="btnGuardarCambios">Guardar</button>
             </div>
         </div>
 
+
+        <div id="modalEliminar">
+            <div id="modalEliminarCaja">
+                <h3>¿Eliminar cuenta?</h3>
+                <p>Esta acción no se puede deshacer.</p>
+                <div class="fila-botones">
+                    <button class="btn btn-secundario" id="btnCancelarEliminar">Cancelar</button>
+                    <button class="btn btn-peligro"    id="btnConfirmarEliminar">Sí, eliminar</button>
+                </div>
+            </div>
+        </div>
         <div id="mensajesAlerta"></div>
     </main>
 

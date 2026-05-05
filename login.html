@@ -2,9 +2,15 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <!-- preconnect para que el navegador conecte con Google Fonts antes de necesitarlas -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- carga de fuentes en el head para evitar el destello de texto sin estilo -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Orbitron:wght@700;900&display=swap" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Almi Birds — Login</title>
-    <link rel="stylesheet" href="css/index.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/login.css" />
 </head>
 <body>
 
@@ -30,12 +36,12 @@
 
             <div class="separador">o</div>
 
-            <a href="registro.html" class="btn btn-secundario btn-full" style="margin-top:4px;">
+            <a href="registro.html" class="btn btn-secundario btn-full">
                 Crear cuenta nueva
             </a>
         </div>
 
-        <div id="mensajesAlerta" style="margin-top:16px;"></div>
+        <div id="mensajesAlerta"></div>
 
     </div>
 

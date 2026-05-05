@@ -231,9 +231,20 @@ $(document).ready(function () {
         $('#btnGuardarCambios').prop('disabled', false).text('Guardar');
     });
 
-    $('#btnEliminarCuenta').click(async function () {
-        const ok = confirm('¿Seguro que quieres eliminar tu cuenta? Esta acción no se puede deshacer.');
-        if (!ok) return;
+    $('#btnEliminarCuenta').click(function () {
+        $('#modalEliminar').addClass('visible');
+    });
+
+    $('#btnCancelarEliminar').click(function () {
+        $('#modalEliminar').removeClass('visible');
+    });
+
+    $('#modalEliminar').click(function (e) {
+        if (e.target === this) $('#modalEliminar').removeClass('visible');
+    });
+
+    $('#btnConfirmarEliminar').click(async function () {
+        $('#modalEliminar').removeClass('visible');
 
         try {
             const respuesta = await eliminarUsuario(usuarioActual._id);

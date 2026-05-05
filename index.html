@@ -2,9 +2,15 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <!-- preconnect para que el navegador conecte con Google Fonts antes de necesitarlas -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- carga de fuentes en el head para evitar el destello de texto sin estilo -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Orbitron:wght@700;900&display=swap" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Almi Birds — Inicio</title>
-   <link rel="stylesheet" href="css/index.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/index.css" />
 </head>
 <body>
 
@@ -27,22 +33,18 @@
         <h2>Top <span>3</span> jugadores</h2>
         <div id="top3" class="cargando">Cargando...</div>
 
-        <h2 style="margin-top:10px;">Accesos rápidos</h2>
+        <h2>Accesos rápidos</h2>
 
         <a href="ranking.html" class="tarjeta-jugador">
-            <div style="font-size:2.2rem;"></div>
+            <div></div>
             <h3>Ranking completo</h3>
-            <p style="color:var(--text-muted); font-size:0.85rem; text-align:center;">
-                Filtra por nivel, jugador y más
-            </p>
+            <p>Filtra por nivel, jugador y más</p>
         </a>
 
         <a href="perfil.html" class="tarjeta-jugador">
-            <div style="font-size:2.2rem;"></div>
+            <div></div>
             <h3>Mi perfil</h3>
-            <p style="color:var(--text-muted); font-size:0.85rem; text-align:center;">
-                Gestiona tus datos y avatar
-            </p>
+            <p>Gestiona tus datos y avatar</p>
         </a>
 
         <div id="mensajesAlerta"></div>

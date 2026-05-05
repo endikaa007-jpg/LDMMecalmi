@@ -1,0 +1,98 @@
+
+.filtros {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.filtros select,
+.filtros input[type='text'] {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 9px 14px;
+  color: var(--text-main);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.95rem;
+  transition: border-color 0.2s;
+}
+
+.filtros select:focus,
+.filtros input[type='text']:focus {
+  outline: none;
+  border-color: var(--color-verde);
+}
+
+.tabla-ranking {
+  width: 90%;
+  max-width: 750px;
+  margin: 0 auto;
+  border-collapse: collapse;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.tabla-ranking th {
+  background: var(--bg-input);
+  padding: 13px 16px;
+  text-align: left;
+  font-size: 0.82rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.tabla-ranking td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.95rem;
+  color: var(--text-main);
+}
+
+.tabla-ranking tr:last-child td {
+  border-bottom: none;
+}
+
+.tabla-ranking tr:hover td {
+  background: rgba(0, 166, 50, 0.05);
+}
+
+.tabla-ranking .pts {
+  font-family: 'Orbitron', sans-serif;
+  color: var(--color-naranja);
+  font-size: 0.9rem;
+}
+
+@media (max-width: 992px) {
+  .tabla-ranking {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .filtros {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    max-width: 460px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .filtros select,
+  .filtros input[type='text'] {
+    width: 100%;
+  }
+
+  .tabla-ranking {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+  }
+}
