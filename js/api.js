@@ -293,6 +293,10 @@ function protegerPagina() {
     }
 }
 
+async function getRecords() {
+    return await requestApi('/records');
+}
+
 function mostrarAlerta(mensaje, tipo) {
     tipo = tipo || 'error';
     const div = document.getElementById('mensajesAlerta');

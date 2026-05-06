@@ -22,6 +22,27 @@ $(document).ready(function () {
         await cargarRankingCompleto();
     });
 
+    $('#btnRecords').click(async function() {
+    try {
+        const datos = await getRecords();
+        const lista = datos && Array.isArray(datos.data) ? datos.data : [];
+
+        todasLasPuntuaciones = lista.map(function(item) {
+            return {
+                usuario: item.nombre || 'Anónimo',
+                puntuacion: item.mejorScore || 0,
+                nivel_dificultad: item.mejorDificultad || 'normal',
+                pais: item.pais || 'No indicado'
+            };
+        });
+
+        renderizarTabla(todasLasPuntuaciones);
+        mostrarAlerta('Mostrando el mejor score de cada jugador.', 'info');
+    } catch(err) {
+        mostrarAlerta('Error al cargar los récords.', 'error');
+    }
+});
+
 });
 
 async function cargarRanking() {
